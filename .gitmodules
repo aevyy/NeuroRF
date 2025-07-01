@@ -1,0 +1,3 @@
+[submodule "CustomNN"]
+	path = CustomNN
+	url = https://github.com/aevyy/NeuralNetwork-CPP
