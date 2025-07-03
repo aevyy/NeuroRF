@@ -25,8 +25,8 @@ std::vector<double> NeuroRF::FeatureExtractor::basicFeatures(const std::vector<s
     features.push_back(I_values_mean);
     features.push_back(I_values_variance);
     features.push_back(I_values_stdDev);
-    features.push_back(Q_values_variance);
     features.push_back(Q_values_mean);
+    features.push_back(Q_values_variance);
     features.push_back(Q_values_stdDev);
 
     return features;
