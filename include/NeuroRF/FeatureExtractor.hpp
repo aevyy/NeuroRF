@@ -9,10 +9,14 @@ namespace NeuroRF {
 
 class FeatureExtractor {
 public:
-    double calculateMean(const std::vector<double> &data);
-    double calculateVariance(const std::vector<double> &data, bool isSample);
-    double calculateStdDev(const std::vector<double> &data, bool isSample);
-    
+
+    // Main interface
+    std::vector<double> basicFeatures(const std::vector<std::complex<double>> sample);
+
+    double getMean(const std::vector<double> &data);
+    double getVariance(const std::vector<double> &data, bool isSample);
+    double getStdDev(const std::vector<double> &data, bool isSample);
+
 private:
 
 };
