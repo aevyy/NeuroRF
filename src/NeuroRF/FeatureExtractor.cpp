@@ -6,14 +6,11 @@
 #include <complex>
 
 std::vector<double> NeuroRF::FeatureExtractor::basicFeatures(const std::vector<std::complex<double>> sample) {
-    std::vector<double> features;
     std::vector<double> I_values;
     std::vector<double> Q_values;
 
-    for (std::complex<double> data : sample) {
-        I_values.push_back(data.real());
-        Q_values.push_back(data.imag());
-    }
+    I_values = getIComponents(sample);
+    Q_values = getQComponents(sample);
 
     double I_values_mean        = getMean(I_values);
     double I_values_variance    = getVariance(I_values, false);
@@ -23,6 +20,8 @@ std::vector<double> NeuroRF::FeatureExtractor::basicFeatures(const std::vector<s
     double Q_values_variance    = getVariance(Q_values, false);
     double Q_values_stdDev      = getStdDev(Q_values, false);
 
+
+    std::vector<double> features;
     features.push_back(I_values_mean);
     features.push_back(I_values_variance);
     features.push_back(I_values_stdDev);
@@ -31,6 +30,26 @@ std::vector<double> NeuroRF::FeatureExtractor::basicFeatures(const std::vector<s
     features.push_back(Q_values_stdDev);
 
     return features;
+}
+
+std::vector<double> NeuroRF::FeatureExtractor::getIComponents(const std::vector<std::complex<double>> data) {
+    std::vector<double> i_values;
+
+    for (std::complex<double> IQs : data) {
+        i_values.push_back(IQs.real());
+    }
+
+    return i_values;
+}
+
+std::vector<double> NeuroRF::FeatureExtractor::getQComponents(const std::vector<std::complex<double>> data) {
+    std::vector<double> q_values;
+
+    for (std::complex<double> IQs : data) {
+        q_values.push_back(IQs.imag());
+    }
+
+    return q_values;
 }
 
 double NeuroRF::FeatureExtractor::getMean(const std::vector<double> &data) {

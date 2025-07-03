@@ -17,6 +17,9 @@ public:
     double getVariance(const std::vector<double> &data, bool isSample);
     double getStdDev(const std::vector<double> &data, bool isSample);
 
+    std::vector<double> getIComponents(const std::vector<std::complex<double>> data);
+    std::vector<double> getQComponents(const std::vector<std::complex<double>> data);
+
 private:
 
 };
