@@ -7,6 +7,26 @@
 
 using namespace std;
 
+void testNoise() {
+    NeuroRF::SignalGenerator generator;
+    NeuroRF::FeatureExtractor extractor;
+    
+    // A clean BPSK signal
+    std::vector<int> bits = {0, 1, 0, 1};
+    std::vector<std::complex<double>> clean_signal;
+    for (int bit : bits) {
+        clean_signal.push_back(generator.generateBPSK(bit));
+    }
+    
+    std::vector<std::complex<double>> noisy_signal = generator.addNoise(clean_signal, 0.1);
+    
+    std::vector<double> clean_features = extractor.basicFeatures(clean_signal);
+    std::vector<double> noisy_features = extractor.basicFeatures(noisy_signal);
+    
+    std::cout << "Clean BPSK Q variance: " << clean_features[4] << std::endl;
+    std::cout << "Noisy BPSK Q variance: " << noisy_features[4] << std::endl;
+}
+
 void testFeatureExtraction() {
     NeuroRF::SignalGenerator    generator;
     NeuroRF::FeatureExtractor   extractor;
@@ -40,7 +60,7 @@ void testFeatureExtraction() {
     cout << "BPSK Q values variance: " << bpsk_q_var << endl;
     cout << "BPSK Q values std dev: " << bpsk_q_stdDev << endl;
 
-    cout << "++++++++++++++++++++++" << endl;
+    cout << "--------------------" << endl;
 
     // Test 2: QPSK test
     std::vector<std::complex<double>> qpsk_signals;
@@ -71,5 +91,5 @@ void testFeatureExtraction() {
     cout << "qpsk Q values variance: " << qpsk_q_var << endl;
     cout << "qpsk Q values std dev: " << qpsk_q_stdDev << endl;
 
-
+    cout << "--------------------" << endl;
 }

@@ -31,3 +31,32 @@ std::complex<double> NeuroRF::SignalGenerator::generateQPSK(int bit1, int bit2) 
         return std::complex<double>(+1.0, -1.0);
     }
 }
+
+
+/* 
+Ref: https://en.wikipedia.org/wiki/Independent_and_identically_distributed_random_variables
+
+Principle:
+'''
+In probability theory and statistics, a collection of random variables
+is independent and identically distributed (i.i.d., iid, or IID) if each
+random variable has the same probability distribution as the others and
+all are mutually independent. IID was first defined in statistics and
+finds application in many fields, such as data mining and signal processing.
+'''
+*/
+std::vector<std::complex<double>> NeuroRF::SignalGenerator::addNoise(
+    const std::vector<std::complex<double>> &signal,
+    double noisePeak) {
+        std::normal_distribution<double> noise(0.0, noisePeak);
+        std::vector<std::complex<double>> noisySignal;
+
+        for (const auto &sample : signal) {
+            double i_noise = noise(generator);
+            double q_noise = noise(generator);
+
+            noisySignal.push_back(sample + std::complex<double> (i_noise, q_noise));
+        }
+
+        return noisySignal;
+    }

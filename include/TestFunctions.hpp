@@ -4,3 +4,4 @@
 #include "NeuroRF/SignalGenerator.hpp"
 
 void testFeatureExtraction();
+void testNoise();
