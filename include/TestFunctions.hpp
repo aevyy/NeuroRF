@@ -5,3 +5,4 @@
 
 void testFeatureExtraction();
 void testNoise();
+void testBatchSignalGeneration();

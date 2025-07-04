@@ -3,15 +3,6 @@
 // Constructor: initializes the class with random generator & random seed
 NeuroRF::SignalGenerator::SignalGenerator() : generator(rd()) {}
 
-std::vector<std::complex<double>> NeuroRF::SignalGenerator::generateBPSKSequence(const std::vector<int> &bits) {
-    std::vector<std::complex<double>> signals;
-
-    for (auto &bit : bits) {
-        signals.push_back(generateBPSK(bit));
-    }
-
-    return signals;
-}
 
 std::complex<double> NeuroRF::SignalGenerator::generateBPSK(int bit) {
     if (bit != 0 && bit != 1) {
@@ -69,3 +60,24 @@ std::vector<std::complex<double>> NeuroRF::SignalGenerator::addNoise(
 
         return noisySignal;
     }
+
+
+std::vector<std::complex<double>> NeuroRF::SignalGenerator::generateBPSKSequence(const std::vector<int> &bits) {
+    std::vector<std::complex<double>> signals;
+
+    for (const auto &bit : bits) {
+        signals.push_back(generateBPSK(bit));
+    }
+
+    return signals;
+}
+
+std::vector<std::complex<double>> NeuroRF::SignalGenerator::generateQPSKSequence(const std::vector<std::pair<int,int>> &bits) {
+    std::vector<std::complex<double>> signals;
+
+    for (const auto &bitPair : bits) {
+        signals.push_back(generateQPSK(bitPair.first, bitPair.second));
+    }
+
+    return signals;
+}

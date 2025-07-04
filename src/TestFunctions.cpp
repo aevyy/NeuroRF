@@ -7,6 +7,26 @@
 
 using namespace std;
 
+void testBatchSignalGeneration() {
+    NeuroRF::SignalGenerator generator;
+
+    // BPSK batch test
+    vector<int> testBits = {0, 1, 0, 1, 0, 1};
+    vector<std::complex<double>> batchSignal = generator.generateBPSKSequence(testBits);
+    cout << "Generated " << batchSignal.size() << " BPSK symbols" << endl;
+    cout << "BPSKs: ";
+    for(auto i : batchSignal) cout << i << "\t"; 
+    cout << endl;
+    
+    // Test QPSK batch generation
+    std::vector<std::pair<int,int>> qpskBits = {{0,0}, {0,1}, {1,0}, {1,1}};
+    std::vector<std::complex<double>> qpskBatch = generator.generateQPSKSequence(qpskBits);
+    std::cout << "Generated " << qpskBatch.size() << " QPSK symbols" << std::endl;
+    cout << "QPSKs: ";
+    for(auto i : qpskBatch) cout << i << "\t"; 
+    cout << endl;
+}
+
 void testNoise() {
     NeuroRF::SignalGenerator generator;
     NeuroRF::FeatureExtractor extractor;
