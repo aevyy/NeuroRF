@@ -1,4 +1,5 @@
 #include "..\..\include\NeuroRF\SignalGenerator.hpp"
+#include "..\..\include\NeuroRF\FeatureExtractor.hpp"
 
 // Constructor: initializes the class with random generator & random seed
 NeuroRF::SignalGenerator::SignalGenerator() : generator(rd()) {}
@@ -52,8 +53,8 @@ std::vector<std::complex<double>> NeuroRF::SignalGenerator::addNoise(
         std::vector<std::complex<double>> noisySignal;
 
         for (const auto &sample : signal) {
-            double i_noise = noise(generator);
-            double q_noise = noise(generator);
+            double i_noise = noise(this->generator);
+            double q_noise = noise(this->generator);
 
             noisySignal.push_back(sample + std::complex<double> (i_noise, q_noise));
         }
@@ -66,7 +67,7 @@ std::vector<std::complex<double>> NeuroRF::SignalGenerator::generateBPSKSequence
     std::vector<std::complex<double>> signals;
 
     for (const auto &bit : bits) {
-        signals.push_back(generateBPSK(bit));
+        signals.push_back(this->generateBPSK(bit));
     }
 
     return signals;
@@ -80,4 +81,62 @@ std::vector<std::complex<double>> NeuroRF::SignalGenerator::generateQPSKSequence
     }
 
     return signals;
+}
+
+
+void NeuroRF::SignalGenerator::generateTrainingCSV(const std::string &fileName, int samplesPerClass) {
+    std::ofstream file(fileName);
+
+    if (!file.is_open()) {
+        throw std::runtime_error("Cannot open file: " + fileName);
+    }    
+
+    // Initial csv headers with basic feature labels
+    file << "I_mean,I_variance,I_stdDev,Q_mean,Q_variance,Q_stdDev,label\n";
+
+    NeuroRF::FeatureExtractor extractor;
+    NeuroRF::SignalGenerator generator;
+
+    std::cout << "Generating training features....\n";
+
+    // BPSK samples first
+    for (int i = 0; i < samplesPerClass; i++) {
+        // Lets generate random bpsk sequence
+        std::vector<int> bits{0, 1, 1, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1};
+        std::vector<std::complex<double>> signal = this->generateBPSKSequence(bits);
+
+        std::vector<std::complex<double>> noisySignal = this->addNoise(signal, 0.1);
+        std::vector<double> features = extractor.basicFeatures(noisySignal);
+
+        // to csv: feature1, feature2, ....., label
+        for (int j = 0; j < features.size(); j++) {
+            file << features[j] << ",";
+        }
+        file << "0\n";   // BPSK label = 0
+
+        if ((i + 1) % 100 == 0) {
+            std::cout << "BPSK signal " << i + 1 << "/" << samplesPerClass << "generated.\n";
+        }
+    }
+
+
+    // QPSK signals now
+    for (int i = 0; i < samplesPerClass; i++) {
+        // Lets generate random QPSK sequence
+        std::vector<std::pair<int, int>> bits = {{0, 0}, {0, 1}, {1, 0}, {1, 1}, {0, 1}};
+        std::vector<std::complex<double>> signal = this->generateQPSKSequence(bits);
+
+        std::vector<std::complex<double>> noisySignal = this->addNoise(signal, 0.1);
+        std::vector<double> features = extractor.basicFeatures(noisySignal);
+
+        // to csv: feature1, feature2, ....., label
+        for (int j = 0; j < features.size(); j++) {
+            file << features[j] << ",";
+        }
+        file << "1\n";   // QPSK label = 1
+
+        if ((i + 1) % 100 == 0) {
+            std::cout << "QPSK signal " << i + 1 << "/" << samplesPerClass << "generated.\n";
+        }
+    }
 }

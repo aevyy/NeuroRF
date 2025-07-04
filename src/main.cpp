@@ -13,6 +13,9 @@ int main() {
     testNoise();
     testBatchSignalGeneration();
 
+    // CSV generation test
+    NeuroRF::SignalGenerator generator;
+    generator.generateTrainingCSV("rf_training_sample.csv", 1000);
 
     return 0;
 }

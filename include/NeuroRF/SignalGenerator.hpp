@@ -4,6 +4,9 @@
 #include <complex>
 #include <string>
 #include <random>
+#include <fstream>
+#include <iostream>
+#include <utility>
 
 namespace NeuroRF {
     enum ModulationType {
@@ -21,6 +24,8 @@ namespace NeuroRF {
     
     std::vector<std::complex<double>> generateBPSKSequence(const std::vector<int> &bits);
     std::vector<std::complex<double>> generateQPSKSequence(const std::vector<std::pair<int,int>> &bits);
+
+    void generateTrainingCSV(const std::string &fiile, int samplesPerClass);
 
     std::vector<std::complex<double>> addNoise(
         const std::vector<std::complex<double>> &signal,
