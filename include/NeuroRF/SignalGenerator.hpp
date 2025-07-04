@@ -18,6 +18,7 @@ namespace NeuroRF {
 
     std::complex<double> generateBPSK(int bit);
     std::complex<double> generateQPSK(int bit1, int bit2);
+    std::vector<std::complex<double>> generateBPSKSequence(const std::vector<int> &bits);
 
     std::vector<std::complex<double>> addNoise(
         const std::vector<std::complex<double>> &signal,
