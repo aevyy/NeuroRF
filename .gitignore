@@ -3,6 +3,8 @@ build/
 *.exe
 *.obj
 *.o
+*.pdb
+*.ilk
 
 # VS Code
 .vscode/
@@ -10,10 +12,14 @@ build/
 # CMake
 CMakeCache.txt
 CMakeFiles/
+cmake_install.cmake
 
 # Generated data
 rf_training.csv
+*.csv
 
 # Visual Studio
 *.vcxproj.user
+*.vcxproj.filters
 *.sln.cache
+*.suo
