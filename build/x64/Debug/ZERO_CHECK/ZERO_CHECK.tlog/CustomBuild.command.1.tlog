@@ -1,0 +1,10 @@
+^D:\ND_EE&SS\PROJECTS\NEURORF\BUILD\CMAKEFILES\2E5533ED8BE9E103789A72D12DEF7CED\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" "-SD:/nd_ee&ss/Projects/NeuroRF" "-BD:/nd_ee&ss/Projects/NeuroRF/build" --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file "D:/nd_ee&ss/Projects/NeuroRF/build/NeuroRF.sln"
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

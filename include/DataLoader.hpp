@@ -5,9 +5,9 @@
 
 class DataLoader {
 public:
-    static void loadTrainingData(
+    static void loadData(
         const std::string &fileName,
         std::vector<std::vector<double>> &features,
-        std::vector<std::vector<double>> &labels
+        std::vector<int> &labels
     );
 };

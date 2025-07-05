@@ -1,2 +1,19 @@
-.vscode
+# Build files
+build/
 *.exe
+*.obj
+*.o
+
+# VS Code
+.vscode/
+
+# CMake
+CMakeCache.txt
+CMakeFiles/
+
+# Generated data
+rf_training.csv
+
+# Visual Studio
+*.vcxproj.user
+*.sln.cache
