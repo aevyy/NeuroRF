@@ -101,8 +101,9 @@ void NeuroRF::SignalGenerator::generateTrainingCSV(const std::string &fileName, 
 
     // BPSK samples first
     for (int i = 0; i < samplesPerClass; i++) {
-        // Lets generate random bpsk sequence
-        std::vector<int> bits{0, 1, 1, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1};
+        // Generating random BPSK sequence (15 bits)
+        std::vector<int> bits(15);
+        for (int& b : bits) b = this->generator() % 2;
         std::vector<std::complex<double>> signal = this->generateBPSKSequence(bits);
 
         std::vector<std::complex<double>> noisySignal = this->addNoise(signal, 0.1);
@@ -119,11 +120,11 @@ void NeuroRF::SignalGenerator::generateTrainingCSV(const std::string &fileName, 
         }
     }
 
-
     // QPSK signals now
     for (int i = 0; i < samplesPerClass; i++) {
-        // Lets generate random QPSK sequence
-        std::vector<std::pair<int, int>> bits = {{0, 0}, {0, 1}, {1, 0}, {1, 1}, {0, 1}};
+        // Generate random QPSK sequence (4 pairs of 2 bits)
+        std::vector<std::pair<int, int>> bits(4);
+        for (auto& p : bits) p = {this->generator() % 2, this->generator() % 2};
         std::vector<std::complex<double>> signal = this->generateQPSKSequence(bits);
 
         std::vector<std::complex<double>> noisySignal = this->addNoise(signal, 0.1);
