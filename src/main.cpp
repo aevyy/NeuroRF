@@ -1,13 +1,10 @@
-
 #include "../include/NeuroRF/SignalGenerator.hpp"
 #include "../include/RFTrainer.hpp"
 #include "../include/TestFunctions.hpp"
 #include <iostream>
-#include <filesystem>
 
 int main() {
     try {
-        // Always generate training data (overwrite existing file)
         std::cout << "Generating RF training data..." << std::endl;
         NeuroRF::SignalGenerator generator;
         generator.generateTrainingCSV("rf_training.csv", 1000);

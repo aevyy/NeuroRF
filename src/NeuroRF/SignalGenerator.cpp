@@ -19,17 +19,21 @@ std::complex<double> NeuroRF::SignalGenerator::generateQPSK(int bit1, int bit2) 
     if ((bit1 != 0 && bit1 != 1) || (bit2 != 0 && bit2 != 1)) {
         throw std::invalid_argument("Bits must be either 0 or 1");
     }
+    
+    // Normalizing by sqrt(2) to have same power as BPSK
+    double scale = 1.0 / std::sqrt(2.0);
+    
     if (bit1 == 0 && bit2 == 0) {
-        return std::complex<double>(+1.0, +1.0);
+        return std::complex<double>(+1.0 * scale, +1.0 * scale);
     }
     else if (bit1 == 0 && bit2 == 1) {
-        return std::complex<double>(-1.0, +1.0);
+        return std::complex<double>(-1.0 * scale, +1.0 * scale);
     }
     else if (bit1 == 1 && bit2 == 0) {
-        return std::complex<double>(-1.0, -1.0);
+        return std::complex<double>(-1.0 * scale, -1.0 * scale);
     }
     else {
-        return std::complex<double>(+1.0, -1.0);
+        return std::complex<double>(+1.0 * scale, -1.0 * scale);
     }
 }
 
@@ -101,12 +105,12 @@ void NeuroRF::SignalGenerator::generateTrainingCSV(const std::string &fileName, 
 
     // BPSK samples first
     for (int i = 0; i < samplesPerClass; i++) {
-        // Generating random BPSK sequence (15 bits)
-        std::vector<int> bits(15);
+        // Generating random BPSK sequence (16 bits)
+        std::vector<int> bits(16);
         for (int& b : bits) b = this->generator() % 2;
         std::vector<std::complex<double>> signal = this->generateBPSKSequence(bits);
 
-        std::vector<std::complex<double>> noisySignal = this->addNoise(signal, 0.1);
+        std::vector<std::complex<double>> noisySignal = this->addNoise(signal, 0.01);
         std::vector<double> features = extractor.basicFeatures(noisySignal);
 
         // to csv: feature1, feature2, ....., label
@@ -122,8 +126,8 @@ void NeuroRF::SignalGenerator::generateTrainingCSV(const std::string &fileName, 
 
     // QPSK signals now
     for (int i = 0; i < samplesPerClass; i++) {
-        // Generate random QPSK sequence (4 pairs of 2 bits)
-        std::vector<std::pair<int, int>> bits(4);
+        // Generate random QPSK sequence (8 pairs to match BPSK length)
+        std::vector<std::pair<int, int>> bits(16);  // 8 -> 15 to test how it performs
         for (auto& p : bits) p = {this->generator() % 2, this->generator() % 2};
         std::vector<std::complex<double>> signal = this->generateQPSKSequence(bits);
 
