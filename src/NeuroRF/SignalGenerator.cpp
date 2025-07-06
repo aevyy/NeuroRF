@@ -89,10 +89,6 @@ std::vector<std::complex<double>> NeuroRF::SignalGenerator::generateQPSKSequence
 
 
 void NeuroRF::SignalGenerator::generateTrainingCSV(int samplesPerClass) {
-
-    /*
-    WIP BELOW
-    */
     // 60% train, 20% test, 20% validation
     int trainSamples = static_cast<int>(samplesPerClass * 0.6);
     int testSamples = static_cast<int>(samplesPerClass * 0.2);
@@ -115,62 +111,48 @@ void NeuroRF::SignalGenerator::generateTrainingCSV(int samplesPerClass) {
             throw std::runtime_error("Cannot open " + fileNames[i]);
         }
     }
-    /*
-    WIP ABOVE
-    */
 
-
-    /*
-
-    // Initial csv headers with basic feature labels
-    File << "I_mean,I_variance,I_stdDev,Q_mean,Q_variance,Q_stdDev,label\n";
-
-    NeuroRF::FeatureExtractor extractor;
-    NeuroRF::SignalGenerator generator;
-
-    std::cout << "Generating training features....\n";
-
-    // BPSK samples first
-    for (int i = 0; i < samplesPerClass; i++) {
-        // Generating random BPSK sequence (16 bits)
-        std::vector<int> bits(16);
-        for (int& b : bits) b = this->generator() % 2;
-        std::vector<std::complex<double>> signal = this->generateBPSKSequence(bits);
-
-        std::vector<std::complex<double>> noisySignal = this->addNoise(signal, 0.01);
-        std::vector<double> features = extractor.basicFeatures(noisySignal);
-
-        // to csv: feature1, feature2, ....., label
-        for (int j = 0; j < features.size(); j++) {
-            file << features[j] << ",";
-        }
-        file << "0\n";   // BPSK label = 0
-
-        if ((i + 1) % 100 == 0) {
-            std::cout << "BPSK signal " << i + 1 << "/" << samplesPerClass << "generated.\n";
-        }
+    for (int i = 0; i < files.size();  i++) {
+        files[i] << "I_mean,I_variance,I_stdDev,Q_mean,Q_variance,Q_stdDev,label\n";
     }
 
-    // QPSK signals now
-    for (int i = 0; i < samplesPerClass; i++) {
-        // Generate random QPSK sequence (8 pairs to match BPSK length)
-        std::vector<std::pair<int, int>> bits(16);  // 8 -> 15 to test how it performs
-        for (auto& p : bits) p = {this->generator() % 2, this->generator() % 2};
-        std::vector<std::complex<double>> signal = this->generateQPSKSequence(bits);
+    FeatureExtractor extractor;
 
-        std::vector<std::complex<double>> noisySignal = this->addNoise(signal, 0.1);
-        std::vector<double> features = extractor.basicFeatures(noisySignal);
+    for (int label = 0; label < 2; label++) {
+        std::vector<int> sampleCounts = {trainSamples, testSamples, valiSamples};
 
-        // to csv: feature1, feature2, ....., label
-        for (int j = 0; j < features.size(); j++) {
-            file << features[j] << ",";
+        for (int fileIdx = 0; fileIdx < 3; fileIdx++) {
+            for (int i = 0; i < sampleCounts[fileIdx]; i++) {
+                std::vector<std::complex<double>> signal;
+
+                // BPSK
+                if (label == 0) {
+                    std::vector<int> bits(16);
+                    for (int &bit : bits) bit = this->generator() % 2;
+                    signal = this->generateBPSKSequence(bits);
+                }
+
+                // QPSK
+                else {
+                    std::vector<std::pair<int, int>> bits(16);
+                    for (auto &bitPair : bits) bitPair = {this->generator() % 2, this->generator() % 2};
+                    signal = this->generateQPSKSequence(bits);
+                }
+
+                std::vector<std::complex<double>> noisySignal = this->addNoise(signal, 0.1);
+                std::vector<double> features = extractor.basicFeatures(noisySignal);
+
+                // Lets write to appropriate files
+                for (size_t j = 0; j < features.size(); j++) {
+                    files[fileIdx] << features[j] << ",";
+                }
+                files[fileIdx] << label << "\n";
+            }
         }
-        file << "1\n";   // QPSK label = 1
 
-        if ((i + 1) % 100 == 0) {
-            std::cout << "QPSK signal " << i + 1 << "/" << samplesPerClass << "generated.\n";
-        }
+        std::cout << (label == 0 ? "BPSK" : "QPSK") << "signals generated for all datasets.";
     }
 
-    */
+    std::cout << "Generated " << trainSamples << " training, " << testSamples
+        << " testing, " << valiSamples << " validation samples per class.\n";
 }
