@@ -88,15 +88,42 @@ std::vector<std::complex<double>> NeuroRF::SignalGenerator::generateQPSKSequence
 }
 
 
-void NeuroRF::SignalGenerator::generateTrainingCSV(const std::string &fileName, int samplesPerClass) {
-    std::ofstream file(fileName);
+void NeuroRF::SignalGenerator::generateTrainingCSV(int samplesPerClass) {
 
-    if (!file.is_open()) {
-        throw std::runtime_error("Cannot open file: " + fileName);
-    }    
+    /*
+    WIP BELOW
+    */
+    // 60% train, 20% test, 20% validation
+    int trainSamples = static_cast<int>(samplesPerClass * 0.6);
+    int testSamples = static_cast<int>(samplesPerClass * 0.2);
+    int valiSamples = static_cast<int>(samplesPerClass - trainSamples - testSamples);
+
+    std::vector<std::ofstream> files = {
+        std::ofstream("trainingData.csv"),
+        std::ofstream("testingData.csv"),
+        std::ofstream("validationData.csv")
+    };
+
+    std::vector<std::string> fileNames = {
+        "trainingData.csv",
+        "testingData.csv",
+        "validationData.csv"
+    };
+
+    for (int i = 0; i < files.size(); i++) {
+        if (!files[i].is_open()) {
+            throw std::runtime_error("Cannot open " + fileNames[i]);
+        }
+    }
+    /*
+    WIP ABOVE
+    */
+
+
+    /*
 
     // Initial csv headers with basic feature labels
-    file << "I_mean,I_variance,I_stdDev,Q_mean,Q_variance,Q_stdDev,label\n";
+    File << "I_mean,I_variance,I_stdDev,Q_mean,Q_variance,Q_stdDev,label\n";
 
     NeuroRF::FeatureExtractor extractor;
     NeuroRF::SignalGenerator generator;
@@ -144,4 +171,6 @@ void NeuroRF::SignalGenerator::generateTrainingCSV(const std::string &fileName, 
             std::cout << "QPSK signal " << i + 1 << "/" << samplesPerClass << "generated.\n";
         }
     }
+
+    */
 }

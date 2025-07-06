@@ -25,7 +25,7 @@ namespace NeuroRF {
     std::vector<std::complex<double>> generateBPSKSequence(const std::vector<int> &bits);
     std::vector<std::complex<double>> generateQPSKSequence(const std::vector<std::pair<int,int>> &bits);
 
-    void generateTrainingCSV(const std::string &fiile, int samplesPerClass);
+    void generateTrainingCSV(int samplesPerClass);
 
     std::vector<std::complex<double>> addNoise(
         const std::vector<std::complex<double>> &signal,
