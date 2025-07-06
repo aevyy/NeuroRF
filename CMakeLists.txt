@@ -4,28 +4,21 @@ project(NeuroRF)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Include directories
+# headers
 include_directories(include)
 include_directories(CustomNN/headers)
 
-# source files (excluding problematic ones)
-file(GLOB_RECURSE SRC_FILES 
-    "src/*.cpp"
-    "CustomNN/src/Layer.cpp"
-    "CustomNN/src/Matrix.cpp"
-    "CustomNN/src/Neuron.cpp"
-    "CustomNN/src/NeuralNetwork/*.cpp"
-)
+# NeuroRF source files
+file(GLOB_RECURSE NEURORF_SRC "src/*.cpp")
 
-# Excluding conflict causing files
-list(FILTER SRC_FILES EXCLUDE REGEX "NetworkDemo\\.cpp$|NetworkTester\\.cpp$|NetworkTrainer\\.cpp$")
+# neural network librry
+add_subdirectory(CustomNN)
 
 # executable
-add_executable(NeuroRF ${SRC_FILES})
+add_executable(NeuroRF ${NEURORF_SRC})
 
-# ensuring the weights directory exists for output files
+# neural network library
+target_link_libraries(NeuroRF NeuralNetwork)
+
+# weights directory
 file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/weights)
-
-# Copying configuration files to build directory
-# file(GLOB CONFIG_FILES "config/*.json")
-# file(COPY ${CONFIG_FILES} DESTINATION ${CMAKE_BINARY_DIR}/config)
