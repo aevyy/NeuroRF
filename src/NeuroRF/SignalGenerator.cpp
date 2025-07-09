@@ -94,11 +94,10 @@ void NeuroRF::SignalGenerator::generateTrainingCSV(int samplesPerClass) {
     int testSamples = static_cast<int>(samplesPerClass * 0.2);
     int valiSamples = static_cast<int>(samplesPerClass - trainSamples - testSamples);
 
-    std::vector<std::ofstream> files = {
-        std::ofstream("trainingData.csv"),
-        std::ofstream("testingData.csv"),
-        std::ofstream("validationData.csv")
-    };
+    std::vector<std::ofstream> files;
+    files.emplace_back(std::ofstream("trainingData.csv"));
+    files.emplace_back(std::ofstream("testingData.csv"));
+    files.emplace_back(std::ofstream("validationData.csv"));
 
     std::vector<std::string> fileNames = {
         "trainingData.csv",
