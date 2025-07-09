@@ -11,6 +11,7 @@ void DataLoader::loadData(
     std::vector<int> &labels) {
 
     std::ifstream file(fileName);
+
     if (!file.is_open()) {
         throw std::runtime_error("Unable to open file: " + fileName);
     }
