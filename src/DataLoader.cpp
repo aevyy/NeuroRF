@@ -5,10 +5,10 @@
 #include <sstream>
 
 // Can be used for both training and testing
-void DataLoader::loadData(
-    const std::string &fileName,
-    std::vector<std::vector<double>> &features,
-    std::vector<int> &labels) {
+void DataLoader::loadData(const std::string &fileName) {
+    // Clearing up existing data
+    this->features.clear();
+    this->labels.clear();
 
     std::ifstream file(fileName);
 

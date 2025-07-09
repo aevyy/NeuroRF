@@ -9,10 +9,12 @@ namespace NeuroRF {
 
 RFTrainer::RFTrainer() : network({6, 12, 8, 2}) {}
 
-void RFTrainer::train(const std::string& csvFile, int epochs) {
-    std::vector<std::vector<double>> features;
-    std::vector<int> labels;
-    DataLoader::loadData(csvFile, features, labels);
+void RFTrainer::train(const std::string& trainFile, int epochs) {
+    DataLoader loader;
+
+    loader.loadData(trainFile);
+    const auto& features = loader.getFeatures();
+    const auto& labels   = loader.getLabels();
     
     // DEBUG: Print training setup
     std::cout << "Training on " << features.size() << " samples for " << epochs << " epochs" << std::endl;
@@ -45,15 +47,21 @@ void RFTrainer::train(const std::string& csvFile, int epochs) {
     }
 }
 
-double RFTrainer::test(const std::string& csvFile) {
-    std::vector<std::vector<double>> features;
-    std::vector<int> labels;
-    DataLoader::loadData(csvFile, features, labels);
+double RFTrainer::test(const std::string& testFile) {
+    DataLoader loader;
+
+    loader.loadData(testFile);
+    const auto& features    = loader.getFeatures();
+    const auto& labels      = loader.getLabels();
     
     std::cout << "Testing on " << features.size() << " samples" << std::endl;
     
     int correct = 0;
+    std::cout << "here" << std::endl;
+    std::cout << features.size();
+
     network.setCurrentTarget(features[features.size() - 1]);
+
     for (size_t i = 0; i < features.size(); i++) {
         network.setCurrentInput(features[i]);
         network.feedForward();
@@ -110,7 +118,16 @@ double RFTrainer::test(const std::string& csvFile) {
     
 }
 
-// double RFTrainer::validate(const std::string &csvFile) {
+// double validate(const std::string &valiFile) {
+//     std::vector<std::vector<double>> features;
+//     std::vector<int> labels;
+
+//     DataLoader loader;
+//     loader.loadData(valiFile);
+
+
+
+    
 
 // }
 
