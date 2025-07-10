@@ -19,8 +19,17 @@ int main() {
 
         // Testing RF classifier
         std::cout << "Testing RF classifier..." << std::endl;
-        double accuracy = trainer.test("testingData.csv");
-        std::cout << "Accuracy: " << accuracy * 100 << "%" << std::endl;
+        double testAccuracy = trainer.test("testingData.csv");
+        std::cout << "Accuracy: " << testAccuracy * 100 << "%" << std::endl;
+
+        // Validating RF classifier
+        std::cout << "\nValidating RF classifier..." << std::endl;
+        double validationAccuracy = trainer.validate("validationData.csv");
+        std::cout << "Validation completed!" << std::endl;
+
+        std::cout << "\n === SUMMARY === " << std::endl;
+        std::cout << "Test Accuracy:        " << testAccuracy * 100 << "%" << std::endl;
+        std::cout << "Validation Accuracy   " << validationAccuracy * 100 << "%" << std::endl;
 
     } catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << std::endl;

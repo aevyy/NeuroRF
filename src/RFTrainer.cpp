@@ -24,7 +24,6 @@ void RFTrainer::train(const std::string& trainFile, int epochs) {
         for (size_t i = 0; i < features.size(); i++) {
             network.setCurrentInput(features[i]);
             network.feedForward();
-            network.setErrors();
             
             // Convert integer label to one-hot vector for training
             std::vector<double> one_hot(2, 0.0);
@@ -39,6 +38,7 @@ void RFTrainer::train(const std::string& trainFile, int epochs) {
             }
             
             network.setCurrentTarget(one_hot);
+            network.setErrors();
             network.backPropagation();
         }
         if (epoch % 10 == 0) {
@@ -118,17 +118,84 @@ double RFTrainer::test(const std::string& testFile) {
     
 }
 
-// double validate(const std::string &valiFile) {
-//     std::vector<std::vector<double>> features;
-//     std::vector<int> labels;
+double RFTrainer::validate(const std::string &valiFile) {
+    DataLoader loader;
 
-//     DataLoader loader;
-//     loader.loadData(valiFile);
+    loader.loadData(valiFile);
+    const auto& features    = loader.getFeatures();
+    const auto& labels      = loader.getLabels();
+
+    std::cout << "Validating on " << features.size() << " samples." << std::endl;
+
+    int correct = 0;
+
+    // Validating samples
+    for (size_t i = 0; i < features.size(); i++) {
+        // Setting input features to perform forward pass
+        network.setCurrentInput(features[i]);
+        network.feedForward();
+
+        // Output from last layer
+        Matrix outputMatrix = network.getActivatedNeuronMatrix(network.topologySize - 1);
+
+        // Lets check matrix dimensions to handle different output formats
+        int rows = outputMatrix.getNumRows();
+        int cols = outputMatrix.getNumCols();
 
 
+        int predicted;
 
-    
+        if (rows == 2 && cols == 1) {
+            // 2 x 1 matrix (column vector output)
+            double output0  = outputMatrix.getValue(0, 0);   // Output for class 0 (BPSK)
+            double output1  = outputMatrix.getValue(1, 0);   // Output for class 1 (QPSK)
+            predicted       = ( output0 > output1) ? 0 : 1;
 
-// }
 
+            // Debug: Printing first 5 and last 5 validation predictions
+            if (i < 5 || i >= features.size() - 5) {
+                std::cout << "Validation sample " << i << ": outputs[" << output0 << ", " << output1 
+                          << "] -> predicted=" << predicted << ", actual=" << labels[i] << std::endl;
+            }
+        }
+
+        else if (rows == 1 && cols == 2) {
+            // 1 x 2 matrix (row vector output)
+            double output0  = outputMatrix.getValue(0, 0);
+            double output1  = outputMatrix.getValue(0, 1);
+            predicted       = ( output0 > output1 ) ? 0 : 1;
+
+            // Debug: Printing first 5 and last 5 validation predictions
+            if (i < 5 || i >= features.size() - 5) {
+                std::cout << "Validation sample " << i << ": outputs[" << output0 << ", " << output1 
+                          << "] -> predicted=" << predicted << ", actual=" << labels[i] << std::endl;
+            }
+        }
+
+        else {
+            // Unexpected matrix dimension
+            std::cout << "Unexpected output matrix dimensions during validation: "
+                      << rows << "x" << cols << std::endl;
+            continue;   // Skipping this sample
+        }
+
+        // Lets check if the prediction matches the actual label
+        if (i < labels.size() && predicted == labels[i]) {
+            correct++;
+        }
+
+    }
+
+    // Calculating and returning validation accuracy
+    if (features.empty()) {
+        std::cout << "Warning: Empty validation dataset!" << std:: endl;
+    }
+
+    double accuracy = (double)correct / features.size();
+    std::cout << "Validation Accuracy: " << correct << "/" << features.size()
+                << " = " << accuracy * 100 << "%" << std::endl;
+                
+    return accuracy;
 }
+
+}   // Namespace NeuroRF
