@@ -11,11 +11,11 @@ NeuroRF::SignalGenerator::SignalGenerator() : generator(rd()) {}
 
 std::complex<double> NeuroRF::SignalGenerator::generate8PSK(int bit1, int bit2, int bit3) {
     /*
-    My strategy to generate the respective signal per bits combination
-    is to first convert the bits combo to its respective decimal form,
-    i.e. 0-7 (binary 111, which is the max we can get as argument, gives 7).
-    Then it gets easier to get the respective signals using an expression:
-    angle = 2 * pi * k/8 
+    My strategy to generate the respective signals as per  the bits
+    combinations is to first convert the bits combo to its respective decimal
+    form, i.e. 0-7 (binary 111, which is the max we can get as argument,
+    gives 7). Then it gets easier to get the respective signals using an
+    expression:  angle = 2 * pi * k/8 
     */
 
     if ((bit1 != 0 && bit1 != 1) || (bit2 != 0 && bit2 != 1) || (bit3 != 0 && bit3 != 1)) {
@@ -105,6 +105,16 @@ std::vector<std::complex<double>> NeuroRF::SignalGenerator::generateQPSKSequence
 
     for (const auto &bitPair : bits) {
         signals.push_back(generateQPSK(bitPair.first, bitPair.second));
+    }
+
+    return signals;
+}
+
+std::vector<std::complex<double>> NeuroRF::SignalGenerator::generate8PSKSequence(const std::vector<int> &bits) {
+    std::vector<std::complex<double>> signals;
+    NeuroRF::SignalGenerator generator;
+    for (int i = 0; i < bits.size() - 2; i++) {
+        signals.push_back(generator.generate8PSK(bits[i], bits[i+1], bits[i+2]));
     }
 
     return signals;
