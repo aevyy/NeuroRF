@@ -1,9 +1,32 @@
 #include "..\..\include\NeuroRF\SignalGenerator.hpp"
 #include "..\..\include\NeuroRF\FeatureExtractor.hpp"
 
+// For some reason, I'm getting errors trying to use M_PI from standard headers
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+
 // Constructor: initializes the class with random generator & random seed
 NeuroRF::SignalGenerator::SignalGenerator() : generator(rd()) {}
 
+std::complex<double> NeuroRF::SignalGenerator::generate8PSK(int bit1, int bit2, int bit3) {
+    /*
+    My strategy to generate the respective signal per bits combination
+    is to first convert the bits combo to its respective decimal form,
+    i.e. 0-7 (binary 111, which is the max we can get as argument, gives 7).
+    Then it gets easier to get the respective signals using an expression:
+    angle = 2 * pi * k/8 
+    */
+
+    if ((bit1 != 0 && bit1 != 1) || (bit2 != 0 && bit2 != 1) || (bit3 != 0 && bit3 != 1)) {
+        throw std::invalid_argument("Bits must be either 1 or 0");
+    }
+
+    // First, lets convert the bits' combo to decimals (0-7)
+    int dec = (bit1 << 2) | (bit2 << 1) | (bit3);    // == (bit1 * 4) + (bit2 * 2) + bit3
+    double angle = 2.0 * M_PI * dec / 8.0;
+    return std::polar(1.0, angle); // Gives the complex number for radius 1 and the given angle
+}
 
 std::complex<double> NeuroRF::SignalGenerator::generateBPSK(int bit) {
     if (bit != 0 && bit != 1) {
