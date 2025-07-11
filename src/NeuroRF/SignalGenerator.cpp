@@ -15,7 +15,7 @@ std::complex<double> NeuroRF::SignalGenerator::generate8PSK(int bit1, int bit2, 
     combinations is to first convert the bits combo to its respective decimal
     form, i.e. 0-7 (binary 111, which is the max we can get as argument,
     gives 7). Then it gets easier to get the respective signals using an
-    expression:  angle = 2 * pi * k/8 
+    expression:  angle = 2 * pi * k/8   
     */
 
     if ((bit1 != 0 && bit1 != 1) || (bit2 != 0 && bit2 != 1) || (bit3 != 0 && bit3 != 1)) {

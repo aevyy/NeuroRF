@@ -1,3 +1,6 @@
 [submodule "CustomNN"]
 	path = CustomNN
 	url = https://github.com/aevyy/NeuralNetwork-CPP
+[submodule "radix-2-DIT"]
+	path = radix-2-DIT
+	url = https://github.com/aevyy/radix-2-DIT
