@@ -173,7 +173,7 @@ void NeuroRF::SignalGenerator::generateTrainingCSV(int samplesPerClass) {
 
                 // 8PSK
                 else if (label == 2) {
-                    std::vector<int> bits(18);
+                    std::vector<int> bits(48);  // Generate 48/3 = 16 signals
                     for (auto &bitTrio : bits) bitTrio = static_cast<int>(this->generator() % 2);
                     signal = this->generate8PSKSequence(bits);
                 }
@@ -189,7 +189,7 @@ void NeuroRF::SignalGenerator::generateTrainingCSV(int samplesPerClass) {
             }
         }
 
-        std::cout << (label == 0 ? "BPSK" : "QPSK") << "signals generated for all datasets.";
+        std::cout << (label == 0 ? "BPSK" : label == 1 ? "QPSK" : "8PSK") << "signals generated for all datasets.";
     }
 
     std::cout << "Generated " << trainSamples << " training, " << testSamples

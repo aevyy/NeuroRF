@@ -7,7 +7,7 @@
 
 namespace NeuroRF {
 
-RFTrainer::RFTrainer() : network({6, 12, 8, 2}) {}
+RFTrainer::RFTrainer() : network({6, 24, 12, 3}) {}
 
 void RFTrainer::train(const std::string& trainFile, int epochs) {
     DataLoader loader;
@@ -26,15 +26,15 @@ void RFTrainer::train(const std::string& trainFile, int epochs) {
             network.feedForward();
             
             // Convert integer label to one-hot vector for training
-            std::vector<double> one_hot(2, 0.0);
-            if (labels[i] >= 0 && labels[i] < 2) {
+            std::vector<double> one_hot(3, 0.0);
+            if (labels[i] >= 0 && labels[i] < 3) {
                 one_hot[labels[i]] = 1.0;
             }
             
             // DEBUG: Print first few training examples from both classes
             if (epoch == 0 && (i < 5 || (i >= features.size()/2 && i < features.size()/2 + 5))) {
-                std::cout << "Training sample " << i << ": label=" << labels[i] 
-                          << " -> one_hot=[" << one_hot[0] << ", " << one_hot[1] << "]" << std::endl;
+                std::cout << "Training sample " << i << ": label=" << labels[i]
+                          << " -> one_hot=[" << one_hot[0] << ", " << one_hot[1] << ", " << one_hot[2] << "]" << std::endl;
             }
             
             network.setCurrentTarget(one_hot);
@@ -61,6 +61,7 @@ double RFTrainer::test(const std::string& testFile) {
     std::cout << features.size();
 
     network.setCurrentTarget(features[features.size() - 1]);
+    int printCount[3] = {0, 0, 0};
 
     for (size_t i = 0; i < features.size(); i++) {
         network.setCurrentInput(features[i]);
@@ -74,31 +75,49 @@ double RFTrainer::test(const std::string& testFile) {
         int cols = output_matrix.getNumCols();
         
         // Determining prediction based on matrix shape
-        int predicted;
-        if (rows == 2 && cols == 1) {
-            // 2x1 matrix (column vector)
-            double output0 = output_matrix.getValue(0, 0);
-            double output1 = output_matrix.getValue(1, 0);
-            predicted = (output0 > output1) ? 0 : 1;
-            
-            // DEBUG: Print first 10 and last 10 predictions
-            if (i < 10 || i >= features.size() - 10) {
-                std::cout << "Sample " << i << ": outputs[" << output0 << ", " << output1 
-                          << "] -> predicted=" << predicted << ", actual=" << labels[i] << std::endl;
+        int predicted = 0;
+        double maxVal;
+        if (rows == 3 && cols == 1) {
+            maxVal = output_matrix.getValue(0, 0);
+            for (int k = 1; k < 3; k++) {
+                double val = output_matrix.getValue(k, 0);
+                if (val > maxVal) {
+                    maxVal = val;
+                    predicted = k;
+                }
+            }
+
+
+            if (printCount[labels[i]] < 5) {
+                std::cout << "Sample " << i << ": outputs["
+                        << output_matrix.getValue(0, 0) << ", "
+                        << output_matrix.getValue(1, 0) << ", "
+                        << output_matrix.getValue(2, 0) << "] -> predicted="
+                        << predicted << ", actual=" << labels[i] << std::endl;
+                printCount[labels[i]]++;
             }
         } 
-        else if (rows == 1 && cols == 2) {
-            // 1x2 matrix (row vector)
-            double output0 = output_matrix.getValue(0, 0);
-            double output1 = output_matrix.getValue(0, 1);
-            predicted = (output0 > output1) ? 0 : 1;
-            
-            // DEBUG: Print first 10 and last 10 predictions
+
+        // row vector
+        else if (rows == 1 && cols == 3) {
+            maxVal = output_matrix.getValue(0, 0);
+            for (int k = 1; k < 3; ++k) {
+                double val = output_matrix.getValue(0, k);
+                if (val > maxVal) {
+                    maxVal = val;
+                    predicted = k;
+                }
+            }
+            // first 10 and last 10 predictions
             if (i < 10 || i >= features.size() - 10) {
-                std::cout << "Sample " << i << ": outputs[" << output0 << ", " << output1 
-                          << "] -> predicted=" << predicted << ", actual=" << labels[i] << std::endl;
+                std::cout << "Sample " << i << ": outputs["
+                        << output_matrix.getValue(0, 0) << ", "
+                        << output_matrix.getValue(0, 1) << ", "
+                        << output_matrix.getValue(0, 2) << "] -> predicted="
+                        << predicted << ", actual=" << labels[i] << std::endl;
             }
         }
+
         else {
             // Unknown format, printing debug info
             std::cout << "Unexpected matrix dimensions: " << rows << "x" << cols << std::endl;
@@ -128,6 +147,7 @@ double RFTrainer::validate(const std::string &valiFile) {
     std::cout << "Validating on " << features.size() << " samples." << std::endl;
 
     int correct = 0;
+    int printCount[3] = {0, 0, 0};
 
     // Validating samples
     for (size_t i = 0; i < features.size(); i++) {
@@ -143,34 +163,45 @@ double RFTrainer::validate(const std::string &valiFile) {
         int cols = outputMatrix.getNumCols();
 
 
-        int predicted;
+        int predicted = 0;
+        double maxVal;
 
-        if (rows == 2 && cols == 1) {
-            // 2 x 1 matrix (column vector output)
-            double output0  = outputMatrix.getValue(0, 0);   // Output for class 0 (BPSK)
-            double output1  = outputMatrix.getValue(1, 0);   // Output for class 1 (QPSK)
-            predicted       = ( output0 > output1) ? 0 : 1;
-
-
-            // Debug: Printing first 5 and last 5 validation predictions
-            if (i < 5 || i >= features.size() - 5) {
-                std::cout << "Validation sample " << i << ": outputs[" << output0 << ", " << output1 
-                          << "] -> predicted=" << predicted << ", actual=" << labels[i] << std::endl;
+        if (rows == 3 && cols == 1) {
+            maxVal = outputMatrix.getValue(0, 0);
+            for (int k = 1; k < 3; ++k) {
+                double val = outputMatrix.getValue(k, 0);
+                if (val > maxVal) {
+                    maxVal = val;
+                    predicted = k;
+                }
+            }
+            if (printCount[labels[i]] < 5) {
+                std::cout << "Validation sample " << i << ": outputs["
+                        << outputMatrix.getValue(0, 0) << ", "
+                        << outputMatrix.getValue(1, 0) << ", "
+                        << outputMatrix.getValue(2, 0) << "] -> predicted="
+                        << predicted << ", actual=" << labels[i] << std::endl;
+                printCount[labels[i]]++;
             }
         }
-
-        else if (rows == 1 && cols == 2) {
-            // 1 x 2 matrix (row vector output)
-            double output0  = outputMatrix.getValue(0, 0);
-            double output1  = outputMatrix.getValue(0, 1);
-            predicted       = ( output0 > output1 ) ? 0 : 1;
-
-            // Debug: Printing first 5 and last 5 validation predictions
-            if (i < 5 || i >= features.size() - 5) {
-                std::cout << "Validation sample " << i << ": outputs[" << output0 << ", " << output1 
-                          << "] -> predicted=" << predicted << ", actual=" << labels[i] << std::endl;
+    else if (rows == 1 && cols == 3) {
+        maxVal = outputMatrix.getValue(0, 0);
+        for (int k = 1; k < 3; ++k) {
+            double val = outputMatrix.getValue(0, k);
+            if (val > maxVal) {
+                maxVal = val;
+                predicted = k;
             }
         }
+        if (printCount[labels[i]] < 5) {
+            std::cout << "Validation sample " << i << ": outputs["
+                    << outputMatrix.getValue(0, 0) << ", "
+                    << outputMatrix.getValue(0, 1) << ", "
+                    << outputMatrix.getValue(0, 2) << "] -> predicted="
+                    << predicted << ", actual=" << labels[i] << std::endl;
+            printCount[labels[i]]++;
+        }
+    }
 
         else {
             // Unexpected matrix dimension

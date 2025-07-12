@@ -6,13 +6,23 @@
 #include <filesystem>
 
 int main() {
+    NeuroRF::RFTrainer trainer;
     NeuroRF::SignalGenerator generator;
-    // Testing 8PSK generation
-    std::vector<int> bits = {0, 0, 0, 1, 1, 0, 0, 0, 0};
-    auto foo = generator.generate8PSKSequence(bits);
+    generator.generateTrainingCSV(3000);
 
-    std::cout << foo[1] << foo[2] << foo[0] << std::endl;
+    // Train the model
+    trainer.train("trainingData.csv", 100);
 
+    // Test the model
+    double test_accuracy = trainer.test("testingData.csv");
+    std::cout << "Test accuracy: " << test_accuracy * 100 << "%" << std::endl;
+
+    // Validate the model
+    double val_accuracy = trainer.validate("validationData.csv");
+    std::cout << "Validation accuracy: " << val_accuracy * 100 << "%" << std::endl;
+
+
+    testFeatureExtraction();
 
     return 0;
 }

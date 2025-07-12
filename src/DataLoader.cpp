@@ -40,7 +40,7 @@ void DataLoader::loadData(const std::string &fileName) {
             label = std::stoi(cell);
         } catch (...) { continue; }
 
-        if (label < 0 || label > 1) continue; // Valid labels for now: 0 or 1
+        if (label < 0 || label > 2) continue; // Valid labels: 0, 1, 2
 
         features.push_back(featureRow);
         labels.push_back(label);

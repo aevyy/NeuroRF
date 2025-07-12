@@ -74,8 +74,6 @@ void testFeatureExtraction() {
     cout << "BPSK I values variance: " << bpsk_i_var << endl;
     cout << "BPSK I values std dev: " << bpsk_i_stdDev << endl;
 
-    cout << "====================" << endl;
-
     cout << "BPSK Q values mean: " << bpsk_q_mean << endl;
     cout << "BPSK Q values variance: " << bpsk_q_var << endl;
     cout << "BPSK Q values std dev: " << bpsk_q_stdDev << endl;
@@ -105,11 +103,30 @@ void testFeatureExtraction() {
     cout << "qpsk I values variance: " << qpsk_i_var << endl;
     cout << "qpsk I values std dev: " << qpsk_i_stdDev << endl;
 
-    cout << "====================" << endl;
-
     cout << "qpsk Q values mean: " << qpsk_q_mean << endl;
     cout << "qpsk Q values variance: " << qpsk_q_var << endl;
     cout << "qpsk Q values std dev: " << qpsk_q_stdDev << endl;
 
     cout << "--------------------" << endl;
+
+    // Test 3: 8PSK test
+    std::vector<std::complex<double>> signal8PSK;
+    std::vector<int> psk8_bits = {0,1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 0, 1, 0};
+    for (int i = 0; i < 6; ++i) {
+        int b1 = psk8_bits[i*3];
+        int b2 = psk8_bits[i*3+1];
+        int b3 = psk8_bits[i*3+2];
+        std::complex<double> psk8_signal = generator.generate8PSK(b1, b2, b3);
+        signal8PSK.push_back(psk8_signal);
+    }
+    std::vector<double> psk8Features = extractor.basicFeatures(signal8PSK);
+    cout << "8PSK I mean: " << psk8Features[0] << endl;
+    cout << "8PSK I variance: " << psk8Features[1] << endl;
+    cout << "8PSK I stddev: " << psk8Features[2] << endl;
+    cout << "8PSK Q mean: " << psk8Features[3] << endl;
+    cout << "8PSK Q variance: " << psk8Features[4] << endl;
+    cout << "8PSK Q stddev: " << psk8Features[5] << endl;
+
+    cout << "--------------------" << endl;
+
 }
