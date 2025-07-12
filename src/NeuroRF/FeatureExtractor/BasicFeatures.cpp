@@ -1,11 +1,11 @@
-#include "..\..\include\NeuroRF\FeatureExtractor.hpp"
+#include "..\..\..\include\NeuroRF\FeatureExtractor.hpp"
 
 #include <vector>
 #include <cmath>
 #include <numeric>
 #include <complex>
 
-std::vector<double> NeuroRF::FeatureExtractor::basicFeatures(const std::vector<std::complex<double>> sample) {
+std::vector<double> NeuroRF::FeatureExtractor::basicFeatures(const std::vector<std::complex<double>> &sample) {
     std::vector<double> I_values;
     std::vector<double> Q_values;
 

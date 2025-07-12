@@ -1,5 +1,7 @@
 #pragma once
 
+
+#include "../../radix-2-DIT/fft.hpp";
 #include <cmath> 
 #include <numeric>
 #include <vector>
@@ -11,7 +13,8 @@ class FeatureExtractor {
 public:
 
     // Main interface
-    std::vector<double> basicFeatures(const std::vector<std::complex<double>> sample);
+    std::vector<double> basicFeatures(const std::vector<std::complex<double>> &sample);
+    std::vector<double> FFTFeatures(const std::vector<std::complex<double>> &sample);
 
     double getMean(const std::vector<double> &data);
     double getVariance(const std::vector<double> &data, bool isSample);
