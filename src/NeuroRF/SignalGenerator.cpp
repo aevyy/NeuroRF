@@ -145,7 +145,9 @@ void NeuroRF::SignalGenerator::generateTrainingCSV(int samplesPerClass) {
     }
 
     for (int i = 0; i < files.size();  i++) {
-        files[i] << "I_mean,I_variance,I_stdDev,Q_mean,Q_variance,Q_stdDev,label\n";
+        files[i] << "I_mean,I_variance,I_stdDev,Q_mean,Q_variance,Q_stdDev,label";
+        for (int k = 0; k < 5; k++) files[i] << ",FFT_mag" << k;
+        files[i] << ",FFT_maxMag,FFT_maxBin,FFT_centroid,FFT_variance,label\n";
     }
 
     FeatureExtractor extractor;

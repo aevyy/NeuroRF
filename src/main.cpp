@@ -22,7 +22,7 @@ int main() {
     std::cout << "Validation accuracy: " << val_accuracy * 100 << "%" << std::endl;
 
 
-    testFeatureExtraction();
+    // testFeatureExtraction();
 
     return 0;
 }

@@ -6,11 +6,8 @@
 #include <complex>
 
 std::vector<double> NeuroRF::FeatureExtractor::basicFeatures(const std::vector<std::complex<double>> &sample) {
-    std::vector<double> I_values;
-    std::vector<double> Q_values;
-
-    I_values = getIComponents(sample);
-    Q_values = getQComponents(sample);
+    std::vector<double> I_values = getIComponents(sample);
+    std::vector<double> Q_values = getQComponents(sample);
 
     double I_values_mean        = getMean(I_values);
     double I_values_variance    = getVariance(I_values, false);
@@ -20,14 +17,18 @@ std::vector<double> NeuroRF::FeatureExtractor::basicFeatures(const std::vector<s
     double Q_values_variance    = getVariance(Q_values, false);
     double Q_values_stdDev      = getStdDev(Q_values, false);
 
-
     std::vector<double> features;
+    // Basic I/Q features
     features.push_back(I_values_mean);
     features.push_back(I_values_variance);
     features.push_back(I_values_stdDev);
     features.push_back(Q_values_mean);
     features.push_back(Q_values_variance);
     features.push_back(Q_values_stdDev);
+
+    // --- FFT-based spectral features ---
+    std::vector<double> fft_features = FFTFeatures(sample);
+    features.insert(features.end(), fft_features.begin(), fft_features.end());
 
     return features;
 }

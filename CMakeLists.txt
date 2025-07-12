@@ -1,24 +1,27 @@
+
 cmake_minimum_required(VERSION 3.10)
 project(NeuroRF)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# headers
-include_directories(include)
-include_directories(CustomNN/headers)
+# NeuroRF headers
+include_directories(${CMAKE_SOURCE_DIR}/include)
+include_directories(${CMAKE_SOURCE_DIR}/CustomNN/headers)
+include_directories(${CMAKE_SOURCE_DIR}/radix-2-DIT)
 
 # NeuroRF source files
-file(GLOB_RECURSE NEURORF_SRC "src/*.cpp")
+file(GLOB_RECURSE NEURORF_SRC "${CMAKE_SOURCE_DIR}/src/*.cpp")
 
-# neural network librry
+# Add subdirectories for libraries
 add_subdirectory(CustomNN)
+add_subdirectory(radix-2-DIT)
 
-# executable
+# Main executable
 add_executable(NeuroRF ${NEURORF_SRC})
 
-# neural network library
-target_link_libraries(NeuroRF NeuralNetwork)
+# Link libraries
+target_link_libraries(NeuroRF NeuralNetwork Radix2DIT)
 
-# weights directory
+# Weights directory
 file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/weights)
