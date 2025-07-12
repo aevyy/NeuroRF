@@ -113,7 +113,7 @@ std::vector<std::complex<double>> NeuroRF::SignalGenerator::generateQPSKSequence
 std::vector<std::complex<double>> NeuroRF::SignalGenerator::generate8PSKSequence(const std::vector<int> &bits) {
     std::vector<std::complex<double>> signals;
     NeuroRF::SignalGenerator generator;
-    for (int i = 0; i < bits.size() - 2; i++) {
+    for (int i = 0; i < bits.size() - 2; i += 3) {
         signals.push_back(generator.generate8PSK(bits[i], bits[i+1], bits[i+2]));
     }
 
@@ -150,7 +150,7 @@ void NeuroRF::SignalGenerator::generateTrainingCSV(int samplesPerClass) {
 
     FeatureExtractor extractor;
 
-    for (int label = 0; label < 2; label++) {
+    for (int label = 0; label < 3; label++) {
         std::vector<int> sampleCounts = {trainSamples, testSamples, valiSamples};
 
         for (int fileIdx = 0; fileIdx < 3; fileIdx++) {
@@ -165,10 +165,17 @@ void NeuroRF::SignalGenerator::generateTrainingCSV(int samplesPerClass) {
                 }
 
                 // QPSK
-                else {
+                else if (label == 1) {
                     std::vector<std::pair<int, int>> bits(16);
                     for (auto &bitPair : bits) bitPair = {this->generator() % 2, this->generator() % 2};
                     signal = this->generateQPSKSequence(bits);
+                }
+
+                // 8PSK
+                else if (label == 2) {
+                    std::vector<int> bits(18);
+                    for (auto &bitTrio : bits) bitTrio = static_cast<int>(this->generator() % 2);
+                    signal = this->generate8PSKSequence(bits);
                 }
 
                 std::vector<std::complex<double>> noisySignal = this->addNoise(signal, 0.1);
