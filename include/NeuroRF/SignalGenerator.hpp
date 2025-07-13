@@ -1,5 +1,7 @@
 #pragma once
 
+#include "..\constants.hpp"
+
 #include <vector>
 #include <complex>
 #include <string>
@@ -15,12 +17,6 @@ enum ModulationType {
     AM, FM,
     GMSK, FSK, ASK, PAM
 };
-
-// struct Triplets {   // Primarily to hold the triplets of 8-PSK bits
-//     int bit1;
-//     int bit2;
-//     int bit3;
-// };
 
 class SignalGenerator {
 public:
