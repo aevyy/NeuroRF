@@ -25,10 +25,12 @@ SignalGenerator();
 std::complex<double> generateBPSK(int bit);
 std::complex<double> generateQPSK(int bit1, int bit2);
 std::complex<double> generate8PSK(int bit1, int bit2, int bit3);
+std::complex<double> generate16QAM(int bit1, int bit2, int bit3, int bit4);
 
 std::vector<std::complex<double>> generateBPSKSequence(const std::vector<int> &bits);
 std::vector<std::complex<double>> generateQPSKSequence(const std::vector<std::pair<int,int>> &bits);
 std::vector<std::complex<double>> generate8PSKSequence(const std::vector<int> &bits);
+std::vector<std::complex<double>> generate16QAMSequence(const std::vector<int> &bits);
 
 void generateTrainingCSV(int samplesPerClass);
 
