@@ -11,7 +11,7 @@ int main() {
 
     // Training the model
     std::cout << "Training neural network..." << std::endl;
-    trainer.train("trainingData.csv", 100);
+    trainer.train("../trainingData.csv", 100);
 
     // Printing weight matrices (first few values)
     std::cout << "\n=== Weight Matrix Analysis ===" << std::endl;
@@ -33,8 +33,8 @@ int main() {
 
     // Test and validation
     std::cout << "\n=== Performance Metrics ===" << std::endl;
-    double test_accuracy = trainer.test("testingData.csv");
-    double val_accuracy = trainer.validate("validationData.csv");
+    double test_accuracy = trainer.test("../testingData.csv");
+    double val_accuracy = trainer.validate("../validationData.csv");
     
     std::cout << "Final Training Error: " << trainer.getNetwork().getTotalError() << std::endl;
     std::cout << "Test Accuracy: " << test_accuracy * 100 << "%" << std::endl;

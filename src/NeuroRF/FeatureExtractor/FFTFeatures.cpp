@@ -20,6 +20,11 @@ std::vector<double> NeuroRF::FeatureExtractor::FFTFeatures(const std::vector<std
     double maxMag = *std::max_element(magnitudes.begin(), magnitudes.end());
     features.push_back(maxMag);
 
+    // Maximum FFT bin (index of strongest frequency component)
+    auto maxIt = std::max_element(magnitudes.begin(), magnitudes.end());
+    double maxBin = static_cast<double>(std::distance(magnitudes.begin(), maxIt));
+    features.push_back(maxBin);
+
     // Spectral centroid (center of mass of spectrun)
     double weightedSum = 0.0;
     double magSum = std::accumulate(magnitudes.begin(), magnitudes.end(), 0.0);
@@ -32,7 +37,7 @@ std::vector<double> NeuroRF::FeatureExtractor::FFTFeatures(const std::vector<std
     // Spectral variance (spread of spectrum)
     double varianceSum = 0.0;
     for (size_t i = 0; i < magnitudes.size(); i++) {
-        varianceSum += std::pow(i - spectralCentroid, 2);
+        varianceSum += magnitudes[i] * std::pow(i - spectralCentroid, 2);
     }
     double spectralVariance = (magSum > 0.0) ? (varianceSum / magSum) : 0.0;
     features.push_back(spectralVariance);
