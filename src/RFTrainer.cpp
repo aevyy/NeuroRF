@@ -7,7 +7,7 @@
 
 namespace NeuroRF {
 
-RFTrainer::RFTrainer() : network({14, 24, 12, 3}) {}
+RFTrainer::RFTrainer() : network({15, 24, 12, 3}) {}
 
 void RFTrainer::train(const std::string& trainFile, int epochs) {
     DataLoader loader;
