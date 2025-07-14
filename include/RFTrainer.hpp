@@ -15,5 +15,6 @@ namespace NeuroRF {
         void train(const std::string &csvFile, int epochs);
         double test(const std::string &csvFile);
         double validate(const std::string &csvFile);
+        NeuralNetwork& getNetwork() { return network; }
     };
 }
