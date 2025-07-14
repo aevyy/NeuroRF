@@ -40,7 +40,7 @@ void DataLoader::loadData(const std::string &fileName) {
             label = std::stoi(cell);
         } catch (...) { continue; }
 
-        if (label < 0 || label > 2) continue; // Valid labels: 0, 1, 2
+        if (label < 0 || label > 3) continue; // Valid labels: 0, 1, 2
 
         features.push_back(featureRow);
         labels.push_back(label);
@@ -50,5 +50,5 @@ void DataLoader::loadData(const std::string &fileName) {
         throw std::runtime_error("Mismatch or empty features/labels in data!");
     }
 
-    std::cout << "Loaded " << features.size() << " samples" << std::endl;    
+    std::cout << "Loaded " << features.size() << " samples" << std::endl;
 }

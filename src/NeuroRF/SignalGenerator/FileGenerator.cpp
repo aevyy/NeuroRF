@@ -32,7 +32,7 @@ void NeuroRF::SignalGenerator::generateTrainingCSV(int samplesPerClass) {
 
     FeatureExtractor extractor;
 
-    for (int label = 0; label < 3; label++) {
+    for (int label = 0; label < 4; label++) {
         std::vector<int> sampleCounts = {trainSamples, testSamples, valiSamples};
 
         for (int fileIdx = 0; fileIdx < 3; fileIdx++) {
@@ -60,7 +60,13 @@ void NeuroRF::SignalGenerator::generateTrainingCSV(int samplesPerClass) {
                     signal = this->generate8PSKSequence(bits);
                 }
 
-                std::vector<std::complex<double>> noisySignal = this->addNoise(signal, 0.1);
+                else if (label == 3) {
+                    std::vector<int> bits(64);
+                    for (auto& bitQuad : bits) bitQuad = static_cast<int>(this->generator() % 2);
+                    signal = this->generate16QAMSequence(bits);
+                }
+
+                std::vector<std::complex<double>> noisySignal = this->addNoise(signal, 0.05);
                 std::vector<double> features = extractor.basicFeatures(noisySignal);
 
                 // Lets write to appropriate files
@@ -71,7 +77,7 @@ void NeuroRF::SignalGenerator::generateTrainingCSV(int samplesPerClass) {
             }
         }
 
-        std::cout << (label == 0 ? "BPSK" : label == 1 ? "QPSK" : "8PSK") << "signals generated for all datasets.\n";
+        std::cout << (label == 0 ? "BPSK" : label == 1 ? "QPSK" : label == 2 ? "8PSK" : label == 3 ? "16QAM" : "Undetected") << "signals generated for all datasets.\n";
     }
 
     std::cout << "Generated " << trainSamples << " training, " << testSamples
