@@ -11,7 +11,7 @@ int main() {
     generator.generateTrainingCSV(3000);
 
     // Train the model
-    trainer.train("trainingData.csv", 100);
+    trainer.train("trainingData.csv", 50);
 
     // Test the model
     double test_accuracy = trainer.test("testingData.csv");
