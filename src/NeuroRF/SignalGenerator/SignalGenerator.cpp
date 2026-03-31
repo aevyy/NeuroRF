@@ -1,7 +1,8 @@
-#include "..\..\..\include\NeuroRF\SignalGenerator.hpp"
+#include "../../../include/NeuroRF/SignalGenerator.hpp"
+#include <ctime>
 
 /* --- Constructor --- */
-NeuroRF::SignalGenerator::SignalGenerator() : generator(rd()) {}
+NeuroRF::SignalGenerator::SignalGenerator() : generator(time(nullptr)) {}
 
 /* --- Noise Adder --- */
 std::vector<std::complex<double>> NeuroRF::SignalGenerator::addNoise(

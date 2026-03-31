@@ -1,4 +1,4 @@
-#include "..\..\..\include\NeuroRF\SignalGenerator.hpp"
+#include "../../../include/NeuroRF/SignalGenerator.hpp"
 
 std::complex<double> NeuroRF::SignalGenerator::generate16QAM(int bit1, int bit2, int bit3, int bit4) {
     if ((bit1 != 0 && bit1 != 1) || (bit2 != 0 && bit2 != 1) ||

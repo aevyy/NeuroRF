@@ -1,4 +1,4 @@
-#include "..\..\..\include\NeuroRF\SignalGenerator.hpp"
+#include "../../../include/NeuroRF/SignalGenerator.hpp"
 
 /*---- BPSK ....*/
 std::complex<double> NeuroRF::SignalGenerator::generateBPSK(int bit) {
@@ -75,9 +75,8 @@ std::complex<double> NeuroRF::SignalGenerator::generate8PSK(int bit1, int bit2, 
 
 std::vector<std::complex<double>> NeuroRF::SignalGenerator::generate8PSKSequence(const std::vector<int> &bits) {
     std::vector<std::complex<double>> signals;
-    NeuroRF::SignalGenerator generator;
-    for (int i = 0; i < bits.size() - 2; i += 3) {
-        signals.push_back(generator.generate8PSK(bits[i], bits[i+1], bits[i+2]));
+    for (int i = 0; i < (int)bits.size() - 2; i += 3) {
+        signals.push_back(this->generate8PSK(bits[i], bits[i+1], bits[i+2]));
     }
 
     return signals;

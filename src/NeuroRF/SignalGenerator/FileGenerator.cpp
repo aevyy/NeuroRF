@@ -1,5 +1,5 @@
-#include "..\..\..\include\NeuroRF\SignalGenerator.hpp"
-#include "..\..\..\include\NeuroRF\FeatureExtractor.hpp"
+#include "../../../include/NeuroRF/SignalGenerator.hpp"
+#include "../../../include/NeuroRF/FeatureExtractor.hpp"
 
 void NeuroRF::SignalGenerator::generateTrainingCSV(int samplesPerClass) {
     // 60% train, 20% test, 20% validation

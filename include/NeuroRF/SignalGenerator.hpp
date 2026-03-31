@@ -1,6 +1,6 @@
 #pragma once
 
-#include "..\constants.hpp"
+#include "../constants.hpp"
 
 #include <vector>
 #include <complex>
@@ -42,7 +42,6 @@ std::vector<std::complex<double>> addNoise(
 private:
 // Random components to generate noise
 std::mt19937 generator;
-std::random_device rd;
 };
 
 }   // Namespace NeuroRF

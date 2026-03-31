@@ -1,4 +1,4 @@
-#include "..\..\..\include\NeuroRF\FeatureExtractor.hpp"
+#include "../../../include/NeuroRF/FeatureExtractor.hpp"
 
 #include <vector>
 #include <cmath>

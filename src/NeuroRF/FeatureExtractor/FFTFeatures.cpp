@@ -1,4 +1,5 @@
-#include "..\..\..\include\NeuroRF\FeatureExtractor.hpp"
+#include "../../../include/NeuroRF/FeatureExtractor.hpp"
+#include <algorithm>
 
 std::vector<double> NeuroRF::FeatureExtractor::FFTFeatures(const std::vector<std::complex<double>> &sample) {
     dsp::fft FFTransform;

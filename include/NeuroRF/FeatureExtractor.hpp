@@ -1,8 +1,8 @@
 #pragma once
 
 
-#include "../../radix-2-DIT/fft.hpp";
-#include "..\constants.hpp"
+#include "../../radix-2-DIT/fft.hpp"
+#include "../constants.hpp"
 
 #include <cmath> 
 #include <numeric>
